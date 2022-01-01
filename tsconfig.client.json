@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"lib": ["ESNext", "DOM"],
+		"target": "ES6",
+		"jsx": "react-jsx",
+		"strict": true,
+		"moduleResolution": "Node",
+		"allowSyntheticDefaultImports": true,
+		"outDir": "./dist/client/"
+	},
+	"include": ["./src/client/index.tsx"]
+}
