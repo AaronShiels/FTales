@@ -1,0 +1,24 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Client",
+			"type": "pwa-chrome",
+			"request": "launch",
+			"url": "http://localhost:8080",
+			"sourceMaps": true
+		},
+		{
+			"name": "Server",
+			"type": "pwa-node",
+			"request": "launch",
+			"skipFiles": ["<node_internals>/**"],
+			"program": "./dist/server/index.js",
+			"outFiles": ["${workspaceFolder}/dist/server/**/*.js"],
+			"sourceMaps": true,
+			"env": {
+				"ORIGIN": "http://localhost:8080"
+			}
+		}
+	]
+}

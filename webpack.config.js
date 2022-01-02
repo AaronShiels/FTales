@@ -1,23 +1,37 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import webpack from "webpack";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import CopyPlugin from "copy-webpack-plugin";
+import ResolveTypeScriptPlugin from "resolve-typescript-plugin";
 
-const config = (_, { mode }) => {
+const config = (env, { mode }) => {
 	if (!mode) throw new Error("Mode not provided");
-	const debugBuild = mode !== "production";
-	console.log(`Configuration: ${debugBuild ? "Debug" : "Release"}`);
+	const developmentBuild = mode !== "production";
+	console.log(`Configuration: ${developmentBuild ? "Development" : "Release"}`);
+	console.log(
+		`Environment Variables: ${Object.entries(env)
+			.map(([k, v]) => `${k}=${v}`)
+			.join(", ")}`
+	);
+
+	const clientRoot = dirname(fileURLToPath(import.meta.url));
 
 	const entry = "./src/client/index.tsx";
 
-	const devtool = debugBuild ? "inline-source-map" : false;
+	const devtool = developmentBuild ? "inline-source-map" : false;
 	const devServer = {
 		static: {
-			directory: path.join(__dirname, "dist/client")
+			directory: clientRoot
 		},
 		port: 8080
 	};
 
-	const resolve = { extensions: [".ts", ".tsx", ".js", ".jsx", ".json"] };
+	const resolveTypeScriptPlugin = new ResolveTypeScriptPlugin.default();
+	const resolve = {
+		extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
+		plugins: [resolveTypeScriptPlugin]
+	};
 
 	const tsLoaderRule = {
 		test: /\.ts(x?)$/,
@@ -26,7 +40,7 @@ const config = (_, { mode }) => {
 			{
 				loader: "ts-loader",
 				options: {
-					transpileOnly: !debugBuild,
+					transpileOnly: !developmentBuild,
 					configFile: "tsconfig.client.json"
 				}
 			}
@@ -34,11 +48,14 @@ const config = (_, { mode }) => {
 	};
 	const module = { rules: [tsLoaderRule] };
 
-	const output = { filename: "app.[contenthash].js", path: path.join(__dirname, "dist/client"), clean: true };
+	const output = { filename: "app.[contenthash].js", path: clientRoot, clean: true };
 
-	const htmlPluginConfig = new HtmlWebpackPlugin({ title: "FTales", template: "./src/client/index.html" });
+	const htmlPlugin = new HtmlWebpackPlugin({ title: "FTales", template: "./src/client/index.html" });
 	const copyPlugin = new CopyPlugin({ patterns: [{ from: "assets/*/*", context: "./src/client" }] });
-	const plugins = [htmlPluginConfig /*copyPlugin*/];
+	const definePlugin = new webpack.DefinePlugin({
+		API_BASE_URL: JSON.stringify(env.API_BASE_URL)
+	});
+	const plugins = [htmlPlugin /*, copyPlugin*/, definePlugin];
 
 	return {
 		entry,
@@ -52,4 +69,4 @@ const config = (_, { mode }) => {
 	};
 };
 
-module.exports = config;
+export default config;

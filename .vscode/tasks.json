@@ -10,6 +10,21 @@
 			"label": "npm: build: client: development",
 			"type": "npm",
 			"script": "build: client: development"
+		},
+		{
+			"label": "npm: build: client: release",
+			"type": "npm",
+			"script": "build: client: release"
+		},
+		{
+			"label": "npm: build: server: development",
+			"type": "npm",
+			"script": "build: server: development"
+		},
+		{
+			"label": "npm: build: server: release",
+			"type": "npm",
+			"script": "build: server: release"
 		}
 	]
 }
