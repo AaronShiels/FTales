@@ -1,4 +1,4 @@
-import { dirname } from "path";
+import { dirname, resolve as resolvePath } from "path";
 import { fileURLToPath } from "url";
 import webpack from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
@@ -8,21 +8,24 @@ import ResolveTypeScriptPlugin from "resolve-typescript-plugin";
 const config = (env, { mode }) => {
 	if (!mode) throw new Error("Mode not provided");
 	const developmentBuild = mode !== "production";
-	console.log(`Configuration: ${developmentBuild ? "Development" : "Release"}`);
+	const src = "./src/client";
+	const dist = "./dist/client";
+	var absRoot = dirname(fileURLToPath(import.meta.url));
+
+	console.log(`Mode: ${developmentBuild ? "Development" : "Release"}`);
 	console.log(
 		`Environment Variables: ${Object.entries(env)
 			.map(([k, v]) => `${k}=${v}`)
 			.join(", ")}`
 	);
+	console.log(`Root: ${absRoot}\nSource: ${src}\nDistributables: ${dist}`);
 
-	const clientRoot = dirname(fileURLToPath(import.meta.url));
-
-	const entry = "./src/client/index.tsx";
+	const entry = `${src}/index.tsx`;
 
 	const devtool = developmentBuild ? "inline-source-map" : false;
 	const devServer = {
 		static: {
-			directory: clientRoot
+			directory: dist
 		},
 		port: 8080
 	};
@@ -46,12 +49,14 @@ const config = (env, { mode }) => {
 			}
 		]
 	};
+
 	const module = { rules: [tsLoaderRule] };
 
-	const output = { filename: "app.[contenthash].js", path: clientRoot, clean: true };
+	var absDist = resolvePath(absRoot, dist);
+	const output = { filename: "app.[contenthash].js", path: absDist, clean: true };
 
-	const htmlPlugin = new HtmlWebpackPlugin({ title: "FTales", template: "./src/client/index.html" });
-	const copyPlugin = new CopyPlugin({ patterns: [{ from: "assets/*/*", context: "./src/client" }] });
+	const htmlPlugin = new HtmlWebpackPlugin({ title: "FTales", template: `${src}/index.html` });
+	const copyPlugin = new CopyPlugin({ patterns: [{ from: "assets/*/*", context: src }] });
 	const definePlugin = new webpack.DefinePlugin({
 		API_BASE_URL: JSON.stringify(env.API_BASE_URL)
 	});

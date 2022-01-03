@@ -4,27 +4,32 @@
 		{
 			"label": "npm: install",
 			"type": "npm",
-			"script": "install"
+			"script": "install",
+			"problemMatcher": []
 		},
 		{
 			"label": "npm: build: client: development",
 			"type": "npm",
-			"script": "build: client: development"
+			"script": "build: client: development",
+			"problemMatcher": []
 		},
 		{
 			"label": "npm: build: client: release",
 			"type": "npm",
-			"script": "build: client: release"
+			"script": "build: client: release",
+			"problemMatcher": []
 		},
 		{
 			"label": "npm: build: server: development",
 			"type": "npm",
-			"script": "build: server: development"
+			"script": "build: server: development",
+			"problemMatcher": []
 		},
 		{
 			"label": "npm: build: server: release",
 			"type": "npm",
-			"script": "build: server: release"
+			"script": "build: server: release",
+			"problemMatcher": []
 		}
 	]
 }

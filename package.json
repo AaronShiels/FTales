@@ -6,7 +6,7 @@
 	"main": "./dist/server/index.js",
 	"scripts": {
 		"build: client: development": "webpack serve --config webpack.config.js --mode development --env API_BASE_URL=http://localhost:9090",
-		"build: client: release": "webpack --config webpack.config.js --mode production",
+		"build: client: release": "webpack --config webpack.config.js --mode production --env API_BASE_URL=https://api.shiels.net.au",
 		"build: server: development": "tsc --project tsconfig.server.json --sourceMap --watch",
 		"build: server: release": "tsc --project tsconfig.server.json"
 	},
