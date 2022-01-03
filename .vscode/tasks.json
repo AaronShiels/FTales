@@ -26,9 +26,37 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "npm: build: server: release",
-			"type": "npm",
-			"script": "build: server: release",
+			"label": "terraform: init",
+			"type": "process",
+			"command": "terraform",
+			"args": ["init"],
+			"problemMatcher": []
+		},
+		{
+			"label": "terraform: apply",
+			"type": "process",
+			"command": "terraform",
+			"args": ["apply"],
+			"problemMatcher": []
+		},
+		{
+			"label": "docker: login",
+			"type": "shell",
+			"command": "aws ecr get-login-password --profile personal --region us-west-2 | docker login --username AWS --password-stdin 255537259750.dkr.ecr.us-west-2.amazonaws.com/ftales",
+			"problemMatcher": []
+		},
+		{
+			"label": "docker: build",
+			"type": "shell",
+			"command": "docker",
+			"args": ["build", "--tag", "255537259750.dkr.ecr.us-west-2.amazonaws.com/ftales", "."],
+			"problemMatcher": []
+		},
+		{
+			"label": "docker: push",
+			"type": "shell",
+			"command": "docker",
+			"args": ["push", "255537259750.dkr.ecr.us-west-2.amazonaws.com/ftales"],
 			"problemMatcher": []
 		}
 	]
