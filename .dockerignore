@@ -1,0 +1,13 @@
+.git/
+.terraform/
+.vscode/
+node_modules/
+Dockerfile
+docker-compose.*
+*.md
+*.tf
+.gitignore
+.dockerignore
+package-lock.json
+.terraform.lock.hcl
+webpack.config.js

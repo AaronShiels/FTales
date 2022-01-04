@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 
 const handler: RequestHandler<{}, string> = (_, response) => {
-	response.send("Bar");
+	response.send("Healthy");
 };
 
 export { handler };

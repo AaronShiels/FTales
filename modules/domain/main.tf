@@ -1,9 +1,9 @@
 resource "aws_acm_certificate" "domain" {
-  provider = aws.certificate
-
   domain_name               = var.domain_name
   subject_alternative_names = ["*.${var.domain_name}"]
   validation_method         = "DNS"
+
+  provider = aws.certificate
 }
 
 # Note: Manually update name servers to match those assigned to this resource
@@ -30,8 +30,8 @@ resource "aws_route53_record" "domain_validation" {
 }
 
 resource "aws_acm_certificate_validation" "domain" {
-  provider = aws.certificate
-
   certificate_arn         = aws_acm_certificate.domain.arn
   validation_record_fqdns = [for record in aws_route53_record.domain_validation : record.fqdn]
+
+  provider = aws.certificate
 }

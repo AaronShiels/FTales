@@ -39,8 +39,13 @@ module "vpc" {
 module "api" {
   source = "./modules/api"
 
-  name            = local.name
-  hostname        = "api.${local.domain_name}"
-  hosted_zone_id  = module.domain.hosted_zone_id
-  certificate_arn = module.domain.certificate_arn
+  name               = local.name
+  scale_factor       = 0
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
+  public_subnet_ids  = module.vpc.public_subnets
+  hostname           = "api.${local.domain_name}"
+  origins            = [for hostname in module.website.hostnames : "https://${hostname}"]
+  hosted_zone_id     = module.domain.hosted_zone_id
+  certificate_arn    = module.domain.certificate_arn
 }
