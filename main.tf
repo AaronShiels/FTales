@@ -36,16 +36,27 @@ module "vpc" {
   single_nat_gateway = true
 }
 
-module "api" {
-  source = "./modules/api"
+resource "aws_ecs_cluster" "services" {
+  name = local.name
+}
 
-  name               = local.name
-  scale_factor       = 0
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnets
-  public_subnet_ids  = module.vpc.public_subnets
-  hostname           = "api.${local.domain_name}"
-  origins            = [for hostname in module.website.hostnames : "https://${hostname}"]
-  hosted_zone_id     = module.domain.hosted_zone_id
-  certificate_arn    = module.domain.certificate_arn
+resource "aws_ecr_repository" "api" {
+  name = "${local.name}-api"
+}
+
+module "api" {
+  source = "./modules/service"
+
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+  cluster_id = aws_ecs_cluster.services.id
+
+  name             = "api"
+  image            = "${aws_ecr_repository.api.repository_url}:latest"
+  scale_factor     = 1
+  port_mapping     = { "80" : "80" }
+  health_check_url = "http://localhost:80/health"
+  environment = {
+    "ORIGINS" : join(",", [for hostname in module.website.hostnames : "https://${hostname}"])
+  }
 }
