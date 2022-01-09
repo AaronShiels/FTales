@@ -35,3 +35,7 @@ variable "cluster_id" {
 variable "subnet_ids" {
   description = "The list of subnet IDs for the service to be associated with."
 }
+
+variable "target_group_arn" {
+  description = "The ARN of the load balancer target group for the service to be associated with."
+}

@@ -15,22 +15,28 @@ resource "aws_ecs_service" "service" {
     subnets = var.subnet_ids
   }
 
-  # load_balancer {
-  #   target_group_arn = aws_lb_target_group.service.arn
-  #   container_name   = "api"
-  #   container_port   = "80"
-  # }
+  dynamic "load_balancer" {
+    for_each = var.port_mapping
+
+    content {
+      target_group_arn = var.target_group_arn
+      container_name   = var.name
+      container_port   = load_balancer.key
+    }
+  }
 }
 
 resource "aws_security_group" "service" {
+  name   = var.name
   vpc_id = var.vpc_id
 }
 
 resource "aws_security_group_rule" "egress" {
   type              = "egress"
+  description       = "Allow all."
   from_port         = 0
   to_port           = 0
-  protocol          = "tcp"
+  protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.service.id
 }
@@ -39,6 +45,7 @@ resource "aws_security_group_rule" "ingress" {
   for_each = var.port_mapping
 
   type              = "ingress"
+  description       = "Allow TCP ${each.key}"
   from_port         = tonumber(each.key)
   to_port           = tonumber(each.key)
   protocol          = "tcp"

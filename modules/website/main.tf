@@ -48,7 +48,7 @@ resource "aws_cloudfront_distribution" "website" {
   }
 
   viewer_certificate {
-    acm_certificate_arn = var.certificate_arn
+    acm_certificate_arn = aws_acm_certificate.website.arn
     ssl_support_method  = "sni-only"
   }
 
@@ -77,6 +77,39 @@ resource "aws_route53_record" "website_cname_www" {
   type    = "CNAME"
   ttl     = "300"
   records = [local.website_hostname]
+}
+
+resource "aws_acm_certificate" "website" {
+  domain_name               = local.website_hostname
+  subject_alternative_names = [local.website_hostname_www]
+  validation_method         = "DNS"
+
+  provider = aws.certificate
+}
+
+resource "aws_route53_record" "website_validation" {
+  for_each = {
+    for dvo in aws_acm_certificate.website.domain_validation_options : dvo.domain_name => {
+      name    = dvo.resource_record_name
+      record  = dvo.resource_record_value
+      type    = dvo.resource_record_type
+      zone_id = var.hosted_zone_id
+    }
+  }
+
+  allow_overwrite = true
+  name            = each.value.name
+  records         = [each.value.record]
+  ttl             = 60
+  type            = each.value.type
+  zone_id         = each.value.zone_id
+}
+
+resource "aws_acm_certificate_validation" "website" {
+  certificate_arn         = aws_acm_certificate.website.arn
+  validation_record_fqdns = [for record in aws_route53_record.website_validation : record.fqdn]
+
+  provider = aws.certificate
 }
 
 resource "aws_cloudfront_origin_access_identity" "website" {
