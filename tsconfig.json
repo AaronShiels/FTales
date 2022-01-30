@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"strict": true,
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
+		"jsx": "react-jsx"
 	}
 }

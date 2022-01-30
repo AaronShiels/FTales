@@ -1,15 +1,17 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import * as api from "../services/api.js";
 
 const Main: FC = () => {
-	const [message, setMessage] = useState<string>();
-	const handleClick = (): Promise<string> => api.foo();
+	const handleClick = async (): Promise<void> => {
+		const tale = await api.getTale();
+		const utterance = new SpeechSynthesisUtterance(tale);
+		window.speechSynthesis.speak(utterance);
+	};
 
 	return (
 		<div>
-			<h1>Hello world!</h1>
-			<button onClick={handleClick}>Foo</button>
-			{message}
+			<h1>Audio</h1>
+			<button onClick={handleClick}>Play</button>
 		</div>
 	);
 };

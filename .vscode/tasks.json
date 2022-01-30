@@ -8,9 +8,9 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "npm: build: client: development",
+			"label": "npm: build: client: debug",
 			"type": "npm",
-			"script": "build: client: development",
+			"script": "build: client: debug",
 			"problemMatcher": []
 		},
 		{
@@ -20,9 +20,9 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "npm: build: server: development",
+			"label": "npm: build: server: debug",
 			"type": "npm",
-			"script": "build: server: development",
+			"script": "build: server: debug",
 			"problemMatcher": []
 		},
 		{
@@ -37,6 +37,13 @@
 			"type": "process",
 			"command": "terraform",
 			"args": ["apply"],
+			"problemMatcher": []
+		},
+		{
+			"label": "terraform: destroy",
+			"type": "process",
+			"command": "terraform",
+			"args": ["destroy"],
 			"problemMatcher": []
 		},
 		{

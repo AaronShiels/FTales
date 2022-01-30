@@ -1,7 +1,7 @@
 import express from "express";
-import cors, { CorsOptions } from "cors";
+import cors from "cors";
 import * as health from "./handlers/health.js";
-import * as foo from "./handlers/foo.js";
+import * as tales from "./handlers/tales.js";
 
 const app = express();
 const { ORIGINS, PORT } = process.env;
@@ -12,7 +12,7 @@ const corsMiddleware = cors({ origin: origins });
 app.use(corsMiddleware);
 
 app.get("/health", health.handler);
-app.get("/foo", foo.handler);
+app.get("/tales", tales.handler);
 
 const port = parseInt(PORT);
 app.listen(port);
